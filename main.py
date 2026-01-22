@@ -1,6 +1,9 @@
 from config.position import ADVANCED_MAP as position_map
+from config.account import ADVANCED_MAP as account_map
+from config.cash import ADVANCED_MAP as cash_map
 from etl import run_etl
-from utils.filter import filter_process_functional
+
+# from utils.filter import filter_process_functional
 from utils.parse import parse_advanced_mapping_functional
 
 tables_config = [
@@ -10,16 +13,22 @@ tables_config = [
         "node_tag": "OpenPosition",
         "root_tag": "OpenPositions",
     },
-    # {
-    #     "name": "accounts",
-    #     "mapping": position_map,
-    #     "node_tag": "AccountInformation",
-    #     "root_tag": "AccountInformations",
-    # },
+    {
+        "name": "accounts",
+        "mapping": account_map,
+        "node_tag": "AccountInformation",
+        "root_tag": "FlexStatement",
+    },
+    {
+        "name": "cash",
+        "mapping": cash_map,
+        "node_tag": "CashReportCurrency",
+        "root_tag": "CashReport",
+    },
 ]
 
 if __name__ == "__main__":
-    run_etl()
+    # run_etl()
     for table in tables_config:
         print(f"Processing table: {table['name']}")
 
@@ -30,7 +39,9 @@ if __name__ == "__main__":
             field_mapping=table["mapping"],
         )
 
-        df = filter_process_functional(df)
+        # df = filter_process_functional(df)
+        # print(df.head())
+        # print(df.dtypes)
 
         df.to_csv(f"output/{table['name']}.csv", index=False)
         print(f"Data exported to output/{table['name']}.csv")

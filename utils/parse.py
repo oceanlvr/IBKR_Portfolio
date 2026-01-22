@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import pandas as pd
 from utils.func import to_datetime
+from utils.func import try_numeric
 
 
 def transform_node(attrib, mapping):
@@ -54,7 +55,7 @@ def parse_advanced_mapping_functional(file_path, node_tag, root_tag, field_mappi
     # 3. Pipeline-style processing
     return (
         # A. process numeric columns
-        df.pipe(lambda d: d.apply(pd.to_numeric, errors="ignore"))
+        df.pipe(try_numeric)
         .assign(
             **{
                 # Dynamically process date columns
